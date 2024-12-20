@@ -12,8 +12,6 @@ namespace RasperryInflux.Data.InfluxDB
         const string? authToken = "OlNg2BYK4DZDmdU7s1REd2lNGnhUS42a5JOJmDv8chyJ3hKbL52_KtZIFM3So-aFynzTB5M1hCRrKeV92doFNg==";
 
 
-
-
         public async Task WriteTelemetry(Telemetry telemetry)
         {
             using var client = new InfluxDBClient(hostUrl,  authToken);
