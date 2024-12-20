@@ -3,8 +3,6 @@
 @inject IDataService _service
 @attribute [StreamRendering]
 
-<PageTitle>Weather</PageTitle>
-
 <h1>Weather</h1>
 
 <p>This component demonstrates showing data.</p>
@@ -12,6 +10,7 @@
 <table class="table">
     <thead>
         <tr>
+            <th scope="col">Time</th>
             <th scope="col">Temperatur</th>
             <th scope="col">Luftfugtighed</th>
         </tr>
@@ -20,6 +19,7 @@
     {
         <tbody>
             <tr>
+                <td>@item.time</td>
                 <td>@item.temperature</td>
                 <td>@item.humidity</td>
             </tr>
