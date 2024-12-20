@@ -59,15 +59,15 @@ namespace RasperryInflux.Data.InfluxDB
                 }
             }
 
-            //list = list.GroupBy(x => x.LocalTime.ToString("yy/MM/dd HH/mm"))
-            //    .Select(x =>
-            //    {
-            //        var average = x.First();
-            //        average.Humidity = x.Average(y => y.Humidity);
-            //        average.Temperature = x.Average(y => y.Temperature);
-            //        average.LocalTime = new DateTime((long)x.Average(item => item.LocalTime.Ticks));
-            //        return average;
-            //    }).Take(15).ToList();
+            list = list.GroupBy(x => x.time.ToString("yy/MM/dd HH/mm/ss"))
+                .Select(x =>
+                {
+                    Telemetry average = x.First();
+                    average.humidity = x.Average(y => y.humidity);
+                    average.temperature = x.Average(y => y.temperature);
+                    average.time = new DateTime((long)x.Average(item => item.time.Ticks));
+                    return average;
+                }).OrderByDescending(x => x.time).Take(10).ToList();
             return list;
         }
     }
