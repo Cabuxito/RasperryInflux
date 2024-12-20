@@ -1,17 +1,95 @@
 ﻿@page "/"
 @using RasperryInflux.Entities
 @inject IDataService _service
+@using MudBlazor.Components.Chart.Models
+@using static MudBlazor.Components.Chart.Models.TimeSeriesChartSeries
 
 <PageTitle>Home</PageTitle>
 
-  
+@* @foreach (var item in list)
+{
+    <h1>@item.temperature</h1>
+    <h1>@item.humidity</h1>
+} *@
+
+<div>
+    <MudTimeSeriesChart ChartSeries="@_series" @bind-SelectedIndex="Index" Width="100%" Height="350px" ChartOptions="@_options" CanHideSeries TimeLabelSpacing="TimeSpan.FromMinutes(5)" />
+    <MudGrid>
+        <MudItem xs="6">
+            <MudText Typo="Typo.body1" Class="py-3">Selected: @(Index < 0 ? "None" : _series[Index].Name)</MudText>
+        </MudItem>
+        <MudItem xs="6">
+            <MudSlider @bind-Value="_options.LineStrokeWidth" Min="1" Max="10" Color="Color.Info">Line Width: @_options.LineStrokeWidth.ToString()</MudSlider>
+        </MudItem>
+    </MudGrid>
+</div>
+
+
 
 @code
 {
-    List<Telemetry> list { get; set; } = new();
+    private int Index = -1; //default value cannot be 0 -> first selectedindex is 0.
+    private ChartOptions _options = new ChartOptions
+        {
+            YAxisLines = false,
+            YAxisTicks = 50,
+            MaxNumYAxisTicks = 10,
+            YAxisRequireZeroPoint = true,
+            XAxisLines = false,
+            LineStrokeWidth = 1,
+        };
+
+    private TimeSeriesChartSeries _temp = new();
+    private TimeSeriesChartSeries _humidity = new();
+
+    List<Telemetry> list = new();
+
+    private List<TimeSeriesChartSeries> _series = new();
+
+    private readonly Random _random = new Random();
+
+   
 
     protected override async Task OnInitializedAsync()
     {
-        list = await _service.GetDataService();
+       
+        await LoadData();
+
     }
+
+    private async Task LoadData()
+    {
+        List<TimeValue> temp = [];
+        List<TimeValue> humidity = [];
+        var now = DateTime.Now;
+
+        list = await _service.GetDataService();
+        foreach (var item in list)
+        {
+            temp.Add(new TimeValue(item.time, item.temperature));
+            humidity.Add(new TimeValue(item.time, item.humidity));
+        }
+
+        _temp = new()
+            {
+                Index = 0,
+                Name = "Temperature",
+                Data = temp,
+                IsVisible = true,
+                Type = TimeSeriesDiplayType.Line
+            };
+
+        _humidity = new()
+            {
+                Index = 0,
+                Name = "Humidity",
+                Data = humidity,
+                IsVisible = true,
+                Type = TimeSeriesDiplayType.Line
+            };
+
+        _series.Add(_temp);
+        _series.Add(_humidity);
+        StateHasChanged();
+    } 
 }

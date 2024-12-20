@@ -7,6 +7,7 @@ using RasperryInflux.Components;
 using RasperryInflux.Data;
 using RasperryInflux.Data.InfluxDB;
 using RasperryInflux.Service;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,9 @@ builder.Services.AddSingleton(new MqttClientOptionsBuilder()
 builder.Services.AddScoped<IDataService, DataService>();
 builder.Services.AddSingleton<IInfluxRepository, InfluxRepository>();
 builder.Services.AddHostedService<WorkerRepository>();
+
+builder.Services.AddMudServices();
+
 
 var app = builder.Build();
 
