@@ -37,7 +37,7 @@ namespace RasperryInflux.Data.InfluxDB
         {
             string quere = option switch
             {
-                "All" => "from(bucket: \"KrillzOfDoom\")\r\n  |> range(start: \"-1h\")\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Telemetry\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"Humidity\" or r[\"_field\"] == \"Temperature\")\r\n"
+                "All" => "from(bucket: \"KrillzOfDoom\") \r\n|> range(start: -24h)\r\n|> filter(fn: (r) => r[\"_measurement\"] ==\"Telemetry\")\r\n|> filter(fn: (r) => r[\"_field\"] == \"Humidity\" or r[\"_field\"] == \"Temperature\")\r\n|> pivot (rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")"
 ,
                 "LastHour" => "SELECT * FROM 'TemperatureData' WHERE time >= now() - interval '1 hour' AND 'Humidity' IS NOT NULL OR 'Temperature' IS NOT NULL",
                 "Today" => "SELECT * FROM 'TemperatureData' WHERE time >= today() AND 'Humidity' IS NOT NULL OR 'Temperature' IS NOT NULL"
@@ -47,12 +47,10 @@ namespace RasperryInflux.Data.InfluxDB
 
             using var client = new InfluxDBClient(hostUrl, authToken);
 
-
             foreach (var table in await client.GetQueryApi().QueryAsync(quere, "EUC"))
             {
                 foreach (var records in table.Records)
                 {
-
                     list.Add(new Telemetry()
                     {
                         humidity = Convert.ToDouble(records.GetValueByKey("Humidity")),
