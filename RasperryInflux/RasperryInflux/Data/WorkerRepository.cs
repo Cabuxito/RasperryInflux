@@ -10,7 +10,7 @@ namespace RasperryInflux.Data
 {
     public class WorkerRepository : BackgroundService
     {
-        static readonly MqttTopicTemplate sampleTemplate = new("zigbee2mqtt/0xa4c1380a1328ecf5");
+        static readonly MqttTopicTemplate sampleTemplate = new("zigbee2mqtt/0xa4c13805103512f3");
 
         private readonly IInfluxRepository _influxDBService;
 

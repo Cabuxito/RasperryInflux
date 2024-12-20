@@ -4,16 +4,10 @@
 
 <PageTitle>Home</PageTitle>
 
-@foreach (var item in list)
-{
-    <h1>@item.temperature</h1>
-    <h1>@item.humidity</h1>
-}
-
+  
 
 @code
 {
-
     List<Telemetry> list { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
