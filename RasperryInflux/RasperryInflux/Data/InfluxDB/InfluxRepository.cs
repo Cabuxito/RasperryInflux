@@ -1,6 +1,7 @@
 ﻿using InfluxDB.Client.Writes;
 using InfluxDB.Client;
 using RasperryInflux.Entities;
+using System;
 
 namespace RasperryInflux.Data.InfluxDB
 {
@@ -52,7 +53,8 @@ namespace RasperryInflux.Data.InfluxDB
                     list.Add(new Telemetry()
                     {
                         humidity = Convert.ToDouble(records.GetValueByKey("Humidity")),
-                        temperature = Convert.ToDouble(records.GetValueByKey("Temperature"))
+                        temperature = Convert.ToDouble(records.GetValueByKey("Temperature")),
+                        time = DateTime.Parse(records.GetValueByKey("_time").ToString()).ToLocalTime()
                     });
                 }
             }
